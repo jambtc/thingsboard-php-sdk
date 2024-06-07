@@ -4,26 +4,22 @@ namespace ThingsBoard\Http;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
-use ThingsBoard\Auth\AuthService;
 
 class Client
 {
-    private $authService;
-    private $client;
+    private GuzzleClient $client;
 
-    public function __construct(AuthService $authService)
+    public function __construct()
     {
-        $this->authService = $authService;
         $this->client = new GuzzleClient();
     }
 
-    public function request($method, $uri, $options = [])
+    public function request(string $baseUrl, string $method, string $uri, array $options = []): ?Response
     {
-        $options['headers']['X-Authorization'] = 'Bearer ' . $this->authService->getToken();
-        $options['headers']['Content-Type'] = 'application/json';
+        $client = new GuzzleClient(['base_uri' => $baseUrl]);
 
         try {
-            $response = $this->client->request($method, $this->authService->getBaseUrl() . $uri, $options);
+            $response = $client->request($method, $uri, $options);
             return new Response($response);
         } catch (RequestException $e) {
             // Gestire l'eccezione

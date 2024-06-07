@@ -4,21 +4,20 @@ namespace ThingsBoard\Auth;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use ThingsBoard\Http\Response;
 
 class AuthService
 {
-    private $client;
-    private $baseUrl;
-    private $token;
+    private Client $client;
+    private string $baseUrl;
+    private ?string $token = null;
 
-    public function __construct($baseUrl)
+    public function __construct(string $baseUrl)
     {
         $this->client = new Client();
         $this->baseUrl = rtrim($baseUrl, '/');
     }
 
-    public function authenticate($username, $password)
+    public function authenticate(string $username, string $password): ?string
     {
         try {
             $response = $this->client->post($this->baseUrl . '/api/auth/login', [
@@ -27,9 +26,8 @@ class AuthService
                     'password' => $password
                 ]
             ]);
-
             $data = json_decode($response->getBody()->getContents(), true);
-            $this->token = $data['token'];
+            $this->token = $data['token'] ?? null;
 
             return $this->token;
         } catch (RequestException $e) {
@@ -38,22 +36,22 @@ class AuthService
         }
     }
 
-    public function setToken($token)
+    public function setToken(string $token): void
     {
         $this->token = $token;
     }
 
-    public function getToken()
+    public function getToken(): ?string
     {
         return $this->token;
     }
 
-    public function getClient()
+    public function getClient(): Client
     {
         return $this->client;
     }
 
-    public function getBaseUrl()
+    public function getBaseUrl(): string
     {
         return $this->baseUrl;
     }

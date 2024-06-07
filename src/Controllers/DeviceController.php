@@ -2,34 +2,31 @@
 
 namespace ThingsBoard\Controllers;
 
+use ThingsBoard\Auth\AuthService;
 use ThingsBoard\Http\Client;
 
 class DeviceController
 {
-    private $client;
+    private AuthService $authService;
+    private Client $client;
 
-    public function __construct(Client $client)
+    public function __construct(AuthService $authService)
     {
-        $this->client = $client;
+        $this->authService = $authService;
+        $this->client = new Client();
     }
 
-    public function getDevice($deviceId)
+    public function getDevice(string $deviceId): ?array
     {
-        return $this->client->request('GET', '/api/device/' . $deviceId)->getJson();
+        $response = $this->client->request(
+            $this->authService->getBaseUrl(),
+            'GET',
+            '/api/device/' . $deviceId,
+            ['headers' => ['X-Authorization' => 'Bearer ' . $this->authService->getToken()]]
+        );
+
+        return $response ? $response->getJson() : null;
     }
 
-    public function getDevices($limit = 100)
-    {
-        return $this->client->request('GET', '/api/tenant/devices?limit=' . $limit)->getJson();
-    }
-
-    public function createDevice($name, $type)
-    {
-        $body = [
-            'name' => $name,
-            'type' => $type
-        ];
-
-        return $this->client->request('POST', '/api/device', ['json' => $body])->getJson();
-    }
+    // Altri metodi del controller
 }
