@@ -1,0 +1,20 @@
+{
+    "name": "jambtc/thingsboard-php-sdk",
+    "description": "SDK PHP per ThingsBoard",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ThingsBoard\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ThingsBoard\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
