@@ -17,4 +17,7 @@ $deviceController = new DeviceController($authService);
 // Ottieni un dispositivo
 $device = $deviceController->getDevice('deviceId');
 
+// Ottieni la Lista dei Dispositivi;
+$devices = $deviceController->getAllDevices();
+
 ```
