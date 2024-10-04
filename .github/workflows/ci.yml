@@ -1,0 +1,34 @@
+name: PHP SDK CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout del repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Imposta la versione di PHP e attiva estensioni necessarie
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'  # Sostituisci con la versione di PHP che ti serve
+        extensions: mbstring, intl, pdo, pdo_mysql
+        coverage: xdebug
+
+    # Installa le dipendenze tramite Composer
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    # Esegui i test con PHPUnit
+    - name: Run PHPUnit tests
+      run: ./vendor/bin/phpunit --configuration phpunit.xml
