@@ -161,6 +161,34 @@ class DeviceController
         return $response ? $response->getJson() : null;
     }
 
+    /**
+     * Create Device
+     *
+     * Creates a new device in ThingsBoard using the provided device details.
+     *
+     * @param array $deviceData The data of the device to create (e.g., name, type, etc.).
+     * @return array|null Returns an array of the created device information if successful, or null if the request fails.
+     */
+    public function createDevice(array $deviceData): ?array
+    {
+        // Makes an HTTP POST request to create a new device.
+        $response = $this->client->request(
+            $this->authService->getBaseUrl(),
+            'POST',
+            '/api/device',
+            [
+                'headers' => [
+                    'X-Authorization' => 'Bearer ' . $this->authService->getToken(),
+                    'Content-Type' => 'application/json'
+                ],
+                'json' => $deviceData
+            ]
+        );
+
+        // Returns the JSON response as an associative array, or null if the request failed.
+        return $response ? $response->getJson() : null;
+    }
+
 
     // Other controller methods can be added here
 }
