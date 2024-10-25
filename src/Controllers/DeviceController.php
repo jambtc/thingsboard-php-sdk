@@ -189,6 +189,32 @@ class DeviceController
         return $response ? $response->getJson() : null;
     }
 
+    /**
+     * Delete Device
+     *
+     * Deletes a device in ThingsBoard using its device ID.
+     *
+     * @param string $deviceId The ID of the device to delete.
+     * @return bool Returns true if the device was deleted successfully, or false if the request fails.
+     */
+    public function deleteDevice(string $deviceId): bool
+    {
+        // Effettua una richiesta HTTP DELETE per eliminare il dispositivo
+        $response = $this->client->request(
+            $this->authService->getBaseUrl(),
+            'DELETE',
+            '/api/device/' . $deviceId,
+            [
+                'headers' => [
+                    'X-Authorization' => 'Bearer ' . $this->authService->getToken()
+                ]
+            ]
+        );
+
+        // Controlla se la risposta è valida e ha codice 200 o 204 (successo)
+        return $response && in_array($response->getStatusCode(), [200, 204]);
+    }
+
 
     // Other controller methods can be added here
 }
